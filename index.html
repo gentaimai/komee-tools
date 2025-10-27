@@ -1,280 +1,435 @@
 <!doctype html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>tool.komee.org — テキスト変換・小ツール集</title>
   <meta name="description" content="文字数カウント・JSON整形・URLエンコード・Base64・CSV→JSON・UUID・タイムスタンプ変換など、ブラウザだけで動く無料Webツール。" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b0f14'/><text x='50' y='58' font-size='56' text-anchor='middle' fill='%234cc2ff' font-family='Arial, Helvetica, sans-serif'>T</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230b0f14'/><text x='50' y='58' font-size='56' text-anchor='middle' fill='%234cc2ff' font-family='Arial, Helvetica, sans-serif'>T</text></svg>">
   <style>
-    :root{--bg:#0b0f14;--panel:#121821;--muted:#8b98a5;--text:#e6edf3;--acc:#4cc2ff;--bd:#111722}
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:-apple-system,system-ui,Segoe UI,Roboto,Helvetica,Arial,'Noto Sans JP','Hiragino Kaku Gothic ProN','Yu Gothic UI',Meiryo,sans-serif;background:var(--bg);color:var(--text)}
-    header{position:sticky;top:0;z-index:20;background:linear-gradient(180deg,rgba(18,24,33,.95),rgba(18,24,33,.7));backdrop-filter:saturate(160%) blur(6px);border-bottom:1px solid var(--bd)}
-    .wrap{max-width:1120px;margin:0 auto;padding:16px}
-    .title{font-size:22px;font-weight:800;letter-spacing:.2px}
-    .muted{color:var(--muted);font-size:13px}
-    a{color:var(--acc);text-decoration:none}
-    .grid{display:grid;gap:16px}
-    @media(min-width:900px){.grid{grid-template-columns:2fr 1fr}}
-    .card{background:var(--panel);border:1px solid var(--bd);border-radius:16px;padding:14px;box-shadow:0 6px 22px rgba(0,0,0,.28)}
-    .card h2{font-size:18px;margin:4px 0 10px}
-    textarea, input[type="text"], input[type="number"]{width:100%;background:#0e141d;border:1px solid #1a2432;color:var(--text);border-radius:10px;padding:10px;font-size:14px}
-    textarea{min-height:180px;resize:vertical}
-    .row{display:grid;gap:10px;grid-template-columns:1fr}
-    @media(min-width:680px){.row-2{grid-template-columns:1fr 1fr}}
-    button{background:#0e141d;border:1px solid #1a2432;color:var(--text);border-radius:999px;padding:8px 12px;font-size:13px;cursor:pointer}
-    button:hover{border-color:#2a3b52}
-    .stats{display:flex;gap:8px;flex-wrap:wrap;color:#9fb6c8;font-size:12px}
-    .pill{border:1px solid #1a2432;background:#0e141d;padding:4px 8px;border-radius:999px}
-    footer{border-top:1px solid var(--bd);color:var(--muted)}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
-    .ad{background:#0e141d;border:1px dashed #1a2432;border-radius:12px;padding:10px;display:flex;align-items:center;justify-content:center;min-height:90px}
-    .small{font-size:12px}
-    .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,'Liberation Mono','Courier New',monospace}
+    :root {
+      --bg: #0b0f14;
+      --panel: #121821;
+      --muted: #8b98a5;
+      --text: #e6edf3;
+      --acc: #4cc2ff;
+      --bd: #111722
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    html,
+    body {
+      height: 100%
+    }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, system-ui, Segoe UI, Roboto, Helvetica, Arial, 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', 'Yu Gothic UI', Meiryo, sans-serif;
+      background: var(--bg);
+      color: var(--text)
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(180deg, rgba(18, 24, 33, .95), rgba(18, 24, 33, .7));
+      backdrop-filter: saturate(160%) blur(6px);
+      border-bottom: 1px solid var(--bd)
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 16px
+    }
+
+    .title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: .2px
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    a {
+      color: var(--acc);
+      text-decoration: none
+    }
+
+    .grid {
+      display: grid;
+      gap: 16px
+    }
+
+    @media(min-width:900px) {
+      .grid {
+        grid-template-columns: 2fr 1fr
+      }
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--bd);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 6px 22px rgba(0, 0, 0, .28)
+    }
+
+    .card h2 {
+      font-size: 18px;
+      margin: 4px 0 10px
+    }
+
+    textarea,
+    input[type="text"],
+    input[type="number"] {
+      width: 100%;
+      background: #0e141d;
+      border: 1px solid #1a2432;
+      color: var(--text);
+      border-radius: 10px;
+      padding: 10px;
+      font-size: 14px
+    }
+
+    textarea {
+      min-height: 180px;
+      resize: vertical
+    }
+
+    .row {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: 1fr
+    }
+
+    @media(min-width:680px) {
+      .row-2 {
+        grid-template-columns: 1fr 1fr
+      }
+    }
+
+    button {
+      background: #0e141d;
+      border: 1px solid #1a2432;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      cursor: pointer
+    }
+
+    button:hover {
+      border-color: #2a3b52
+    }
+
+    .stats {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      color: #9fb6c8;
+      font-size: 12px
+    }
+
+    .pill {
+      border: 1px solid #1a2432;
+      background: #0e141d;
+      padding: 4px 8px;
+      border-radius: 999px
+    }
+
+    footer {
+      border-top: 1px solid var(--bd);
+      color: var(--muted)
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 8px 0
+    }
+
+    .ad {
+      background: #0e141d;
+      border: 1px dashed #1a2432;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 90px
+    }
+
+    .small {
+      font-size: 12px
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace
+    }
   </style>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6238004847920381" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6238004847920381"
+    crossorigin="anonymous"></script>
 </head>
+
 <body>
-<header>
-  <div class="wrap" style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
-    <div>
-      <div class="title">tool.komee.org</div>
-      <div class="muted">ブラウザだけで動くテキスト変換・開発小ツール集</div>
-    </div>
-    <nav class="muted" style="display:flex;gap:12px;flex-wrap:wrap">
-      <a href="#text">テキスト</a>
-      <a href="#convert">変換</a>
-      <a href="#dev">開発</a>
-    </nav>
-  </div>
-</header>
-
-<main class="wrap">
-  <section class="card" id="text">
-    <h2>テキストボックス（ライブ統計）</h2>
-    <div class="row">
-      <textarea id="box" class="mono" placeholder="ここにテキストを貼り付け"></textarea>
-      <div class="stats" id="stats"></div>
-      <div class="toolbar">
-        <button onclick="toUpper()">UPPERCASE</button>
-        <button onclick="toLower()">lowercase</button>
-        <button onclick="toTitle()">Title Case</button>
-        <button onclick="trimLines()">前後空白除去</button>
-        <button onclick="dedupLines()">重複行削除</button>
-        <button onclick="sortLines()">行をソート</button>
-        <button onclick="copy('box')">コピー</button>
-        <button onclick="clearBox()">クリア</button>
+  <header>
+    <div class="wrap" style="display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+      <div>
+        <div class="title">tool.komee.org</div>
+        <div class="muted">ブラウザだけで動くテキスト変換・開発小ツール集</div>
       </div>
+      <nav class="muted" style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="#text">テキスト</a>
+        <a href="#convert">変換</a>
+        <a href="#dev">開発</a>
+      </nav>
     </div>
-  </section>
+  </header>
 
-  <div class="grid">
-    <section class="card" id="convert">
-      <h2>変換ツール</h2>
-      <div class="row row-2">
-        <div>
-          <label class="small">URL エンコード / デコード</label>
-          <div class="toolbar">
-            <button onclick="urlEncode()">Encode</button>
-            <button onclick="urlDecode()">Decode</button>
-          </div>
+  <main class="wrap">
+    <section class="card" id="text">
+      <h2>テキストボックス（ライブ統計）</h2>
+      <div class="row">
+        <textarea id="box" class="mono" placeholder="ここにテキストを貼り付け"></textarea>
+        <div class="stats" id="stats"></div>
+        <div class="toolbar">
+          <button onclick="toUpper()">UPPERCASE</button>
+          <button onclick="toLower()">lowercase</button>
+          <button onclick="toTitle()">Title Case</button>
+          <button onclick="trimLines()">前後空白除去</button>
+          <button onclick="dedupLines()">重複行削除</button>
+          <button onclick="sortLines()">行をソート</button>
+          <button onclick="copy('box')">コピー</button>
+          <button onclick="clearBox()">クリア</button>
         </div>
-        <div>
-          <label class="small">Base64 エンコード / デコード</label>
-          <div class="toolbar">
-            <button onclick="b64Encode()">Encode</button>
-            <button onclick="b64Decode()">Decode</button>
-          </div>
-        </div>
-        <div>
-          <label class="small">JSON 整形 / 検証</label>
-          <div class="toolbar">
-            <button onclick="jsonPretty()">整形</button>
-            <button onclick="jsonMinify()">最小化</button>
-            <button onclick="jsonValidate()">検証</button>
-          </div>
-        </div>
-        <div>
-          <label class="small">CSV → JSON</label>
-          <div class="toolbar">
-            <button onclick="csvToJson()">変換</button>
-          </div>
-        </div>
-      </div>
-      <div class="ad" style="margin-top:8px">
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-6238004847920381"
-     data-ad-slot="4957619722"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
       </div>
     </section>
 
-    <aside class="card" id="dev">
-      <h2>開発ツール</h2>
-      <div class="row">
+    <div class="grid">
+      <section class="card" id="convert">
+        <h2>変換ツール</h2>
         <div class="row row-2">
           <div>
-            <label class="small">UUID v4 生成</label>
-            <div class="toolbar"><button onclick="genUUID()">生成</button> <input id="uuid" class="mono" type="text" readonly></div>
+            <label class="small">URL エンコード / デコード</label>
+            <div class="toolbar">
+              <button onclick="urlEncode()">Encode</button>
+              <button onclick="urlDecode()">Decode</button>
+            </div>
           </div>
           <div>
-            <label class="small">UNIXタイム ↔ 日付</label>
+            <label class="small">Base64 エンコード / デコード</label>
             <div class="toolbar">
-              <input id="epoch" class="mono" type="number" placeholder="例: 1730000000" oninput="epochToDate()">
-              <input id="date" class="mono" type="text" placeholder="YYYY-MM-DD HH:mm:ss" oninput="dateToEpoch()">
+              <button onclick="b64Encode()">Encode</button>
+              <button onclick="b64Decode()">Decode</button>
+            </div>
+          </div>
+          <div>
+            <label class="small">JSON 整形 / 検証</label>
+            <div class="toolbar">
+              <button onclick="jsonPretty()">整形</button>
+              <button onclick="jsonMinify()">最小化</button>
+              <button onclick="jsonValidate()">検証</button>
+            </div>
+          </div>
+          <div>
+            <label class="small">CSV → JSON</label>
+            <div class="toolbar">
+              <button onclick="csvToJson()">変換</button>
             </div>
           </div>
         </div>
-        <div class="row row-2">
-          <div>
-            <label class="small">バイト数（UTF-8）</label>
-            <div class="toolbar"><button onclick="alert(bytesOf(box.value)+ ' bytes')">計測</button></div>
+        <div class="ad" style="margin-top:8px">
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6238004847920381"
+            data-ad-slot="4957619722" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+          <span class="muted">広告</span>
+        </div>
+      </section>
+
+      <aside class="card" id="dev">
+        <h2>開発ツール</h2>
+        <div class="row">
+          <div class="row row-2">
+            <div>
+              <label class="small">UUID v4 生成</label>
+              <div class="toolbar"><button onclick="genUUID()">生成</button> <input id="uuid" class="mono" type="text"
+                  readonly></div>
+            </div>
+            <div>
+              <label class="small">UNIXタイム ↔ 日付</label>
+              <div class="toolbar">
+                <input id="epoch" class="mono" type="number" placeholder="例: 1730000000" oninput="epochToDate()">
+                <input id="date" class="mono" type="text" placeholder="YYYY-MM-DD HH:mm:ss" oninput="dateToEpoch()">
+              </div>
+            </div>
           </div>
-          <div>
-            <label class="small">テキスト差分（簡易）</label>
-            <div class="toolbar">
-              <textarea id="diffA" class="mono" placeholder="テキストA"></textarea>
-              <textarea id="diffB" class="mono" placeholder="テキストB"></textarea>
-              <button onclick="simpleDiff()">差分ハイライト</button>
+          <div class="row row-2">
+            <div>
+              <label class="small">バイト数（UTF-8）</label>
+              <div class="toolbar"><button onclick="alert(bytesOf(box.value)+ ' bytes')">計測</button></div>
+            </div>
+            <div>
+              <label class="small">テキスト差分（簡易）</label>
+              <div class="toolbar">
+                <textarea id="diffA" class="mono" placeholder="テキストA"></textarea>
+                <textarea id="diffB" class="mono" placeholder="テキストB"></textarea>
+                <button onclick="simpleDiff()">差分ハイライト</button>
+              </div>
             </div>
           </div>
         </div>
+        <div id="diffOut" class="mono small" style="margin-top:6px;white-space:pre-wrap"></div>
+      </aside>
+    </div>
+
+    <section class="card">
+      <h2>出力</h2>
+      <textarea id="out" class="mono" placeholder="ここに結果が表示されます"></textarea>
+      <div class="toolbar">
+        <button onclick="copy('out')">結果をコピー</button>
+        <button onclick="document.getElementById('out').value=''">クリア</button>
       </div>
-      <div id="diffOut" class="mono small" style="margin-top:6px;white-space:pre-wrap"></div>
-    </aside>
-  </div>
-
-  <section class="card">
-    <h2>出力</h2>
-    <textarea id="out" class="mono" placeholder="ここに結果が表示されます"></textarea>
-    <div class="toolbar">
-      <button onclick="copy('out')">結果をコピー</button>
-      <button onclick="document.getElementById('out').value=''">クリア</button>
+    </section>
+    <div class="ad small" style="margin-top:8px">
+      <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-6238004847920381" data-ad-slot="7957535197"
+        data-ad-format="auto" data-full-width-responsive="true"></ins>
+      <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      <span class="muted">広告</span>
     </div>
-  </section>
 
-</main>
+  </main>
 
-<footer>
-  <div class="wrap" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
-    <div>© <span id="y"></span> komee.org</div>
-    <div class="muted small"><a href="#" onclick="toggle('policy');return false;">プライバシーポリシー</a> ・ <a href="#" onclick="toggle('disclaimer');return false;">免責事項</a></div>
-  </div>
-</footer>
-
-<!-- 簡易ポリシー -->
-<div id="policy" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6)">
-  <div class="card" style="max-width:760px;margin:6vh auto">
-    <h2>プライバシーポリシー</h2>
-    <div class="muted" style="line-height:1.8">
-      当サイトでは、第三者配信の広告サービス（Google AdSense）を利用する場合があります。Cookie を使用し、ユーザーの興味に応じた広告を表示することがあります。Cookie はブラウザ設定から無効化できます。アクセス解析や埋め込みウィジェットにより、閲覧情報が外部に送信される場合があります。取得した情報は広告配信とサイト改善の目的のみに利用し、法令に基づき適切に管理します。
+  <footer>
+    <div class="wrap" style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap">
+      <div>© <span id="y"></span> komee.org</div>
+      <div class="muted small"><a href="#" onclick="toggle('policy');return false;">プライバシーポリシー</a> ・ <a href="#"
+          onclick="toggle('disclaimer');return false;">免責事項</a></div>
     </div>
-    <div style="margin-top:10px;text-align:right"><button onclick="toggle('policy')">閉じる</button></div>
-  </div>
-</div>
-<div id="disclaimer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6)">
-  <div class="card" style="max-width:760px;margin:6vh auto">
-    <h2>免責事項</h2>
-    <div class="muted" style="line-height:1.8">
-      本ツールは情報提供および開発作業の補助を目的としたものであり、結果の正確性を保証しません。本ツールの利用により生じたいかなる損害についても、当サイトは責任を負いません。
+  </footer>
+
+  <!-- 簡易ポリシー -->
+  <div id="policy" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6)">
+    <div class="card" style="max-width:760px;margin:6vh auto">
+      <h2>プライバシーポリシー</h2>
+      <div class="muted" style="line-height:1.8">
+        当サイトでは、第三者配信の広告サービス（Google AdSense）を利用する場合があります。Cookie を使用し、ユーザーの興味に応じた広告を表示することがあります。Cookie
+        はブラウザ設定から無効化できます。アクセス解析や埋め込みウィジェットにより、閲覧情報が外部に送信される場合があります。取得した情報は広告配信とサイト改善の目的のみに利用し、法令に基づき適切に管理します。
+      </div>
+      <div style="margin-top:10px;text-align:right"><button onclick="toggle('policy')">閉じる</button></div>
     </div>
-    <div style="margin-top:10px;text-align:right"><button onclick="toggle('disclaimer')">閉じる</button></div>
   </div>
-</div>
+  <div id="disclaimer" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6)">
+    <div class="card" style="max-width:760px;margin:6vh auto">
+      <h2>免責事項</h2>
+      <div class="muted" style="line-height:1.8">
+        本ツールは情報提供および開発作業の補助を目的としたものであり、結果の正確性を保証しません。本ツールの利用により生じたいかなる損害についても、当サイトは責任を負いません。
+      </div>
+      <div style="margin-top:10px;text-align:right"><button onclick="toggle('disclaimer')">閉じる</button></div>
+    </div>
+  </div>
 
-<script>
-  // util
-  const box = document.getElementById('box');
-  const out = document.getElementById('out');
-  const stats = document.getElementById('stats');
-  function toggle(id){ const el = document.getElementById(id); el.style.display=(el.style.display==='none'||!el.style.display)?'block':'none'; }
-  document.getElementById('y').textContent = new Date().getFullYear();
-  const bytesOf = s => new TextEncoder().encode(s||'').length;
-  const lineSplit = s => (s||'').replace(/\r\n?/g,'\n').split('\n');
-  const copy = id => { const el = (typeof id==='string')?document.getElementById(id):id; el.select(); document.execCommand('copy'); };
+  <script>
+    // util
+    const box = document.getElementById('box');
+    const out = document.getElementById('out');
+    const stats = document.getElementById('stats');
+    function toggle(id) { const el = document.getElementById(id); el.style.display = (el.style.display === 'none' || !el.style.display) ? 'block' : 'none'; }
+    document.getElementById('y').textContent = new Date().getFullYear();
+    const bytesOf = s => new TextEncoder().encode(s || '').length;
+    const lineSplit = s => (s || '').replace(/\r\n?/g, '\n').split('\n');
+    const copy = id => { const el = (typeof id === 'string') ? document.getElementById(id) : id; el.select(); document.execCommand('copy'); };
 
-  // live stats
-  function refreshStats(){
-    const v = box.value || '';
-    const lines = lineSplit(v);
-    const words = (v.match(/\S+/g)||[]).length;
-    stats.innerHTML = `
+    // live stats
+    function refreshStats() {
+      const v = box.value || '';
+      const lines = lineSplit(v);
+      const words = (v.match(/\S+/g) || []).length;
+      stats.innerHTML = `
       <span class="pill">文字数: ${[...v].length}</span>
       <span class="pill">バイト数(UTF-8): ${bytesOf(v)}</span>
       <span class="pill">単語数: ${words}</span>
       <span class="pill">行数: ${lines.length}</span>
     `;
-  }
-  box.addEventListener('input', refreshStats); refreshStats();
+    }
+    box.addEventListener('input', refreshStats); refreshStats();
 
-  // text ops
-  function toUpper(){ out.value = (box.value||'').toUpperCase(); }
-  function toLower(){ out.value = (box.value||'').toLowerCase(); }
-  function toTitle(){ out.value = (box.value||'').toLowerCase().replace(/(^|\s)([a-z])/g, (_,p1,p2)=> p1 + p2.toUpperCase()); }
-  function trimLines(){ out.value = lineSplit(box.value).map(s=>s.trim()).join('\n'); }
-  function dedupLines(){ const set=new Set(); const arr=[]; for(const l of lineSplit(box.value)){ if(!set.has(l)){ set.add(l); arr.push(l); } } out.value = arr.join('\n'); }
-  function sortLines(){ out.value = lineSplit(box.value).sort((a,b)=>a.localeCompare(b)).join('\n'); }
+    // text ops
+    function toUpper() { out.value = (box.value || '').toUpperCase(); }
+    function toLower() { out.value = (box.value || '').toLowerCase(); }
+    function toTitle() { out.value = (box.value || '').toLowerCase().replace(/(^|\s)([a-z])/g, (_, p1, p2) => p1 + p2.toUpperCase()); }
+    function trimLines() { out.value = lineSplit(box.value).map(s => s.trim()).join('\n'); }
+    function dedupLines() { const set = new Set(); const arr = []; for (const l of lineSplit(box.value)) { if (!set.has(l)) { set.add(l); arr.push(l); } } out.value = arr.join('\n'); }
+    function sortLines() { out.value = lineSplit(box.value).sort((a, b) => a.localeCompare(b)).join('\n'); }
 
-  // converters
-  function urlEncode(){ out.value = encodeURIComponent(box.value||''); }
-  function urlDecode(){ try{ out.value = decodeURIComponent(box.value||''); }catch(e){ out.value = 'Decode Error: ' + e.message; } }
-  function b64Encode(){ try{ out.value = btoa(unescape(encodeURIComponent(box.value||''))); }catch(e){ out.value='Base64 Encode Error: '+e.message; } }
-  function b64Decode(){ try{ out.value = decodeURIComponent(escape(atob(box.value||''))); }catch(e){ out.value='Base64 Decode Error: '+e.message; } }
-  function jsonPretty(){ try{ out.value = JSON.stringify(JSON.parse(box.value||'{}'), null, 2); }catch(e){ out.value='JSON Parse Error: '+e.message; } }
-  function jsonMinify(){ try{ out.value = JSON.stringify(JSON.parse(box.value||'{}')); }catch(e){ out.value='JSON Parse Error: '+e.message; } }
-  function jsonValidate(){ try{ JSON.parse(box.value||'{}'); out.value='OK: valid JSON'; }catch(e){ out.value='Invalid JSON: '+e.message; } }
-  function csvToJson(){
-    const lines = lineSplit(box.value).filter(l=>l.length>0);
-    if(!lines.length){ out.value='[]'; return; }
-    const headers = lines[0].split(',').map(h=>h.trim());
-    const data = lines.slice(1).map(l=>{
-      const cols = l.split(',');
-      const obj = {}; headers.forEach((h,i)=> obj[h] = (cols[i]||'').trim());
-      return obj;
-    });
-    out.value = JSON.stringify(data, null, 2);
-  }
+    // converters
+    function urlEncode() { out.value = encodeURIComponent(box.value || ''); }
+    function urlDecode() { try { out.value = decodeURIComponent(box.value || ''); } catch (e) { out.value = 'Decode Error: ' + e.message; } }
+    function b64Encode() { try { out.value = btoa(unescape(encodeURIComponent(box.value || ''))); } catch (e) { out.value = 'Base64 Encode Error: ' + e.message; } }
+    function b64Decode() { try { out.value = decodeURIComponent(escape(atob(box.value || ''))); } catch (e) { out.value = 'Base64 Decode Error: ' + e.message; } }
+    function jsonPretty() { try { out.value = JSON.stringify(JSON.parse(box.value || '{}'), null, 2); } catch (e) { out.value = 'JSON Parse Error: ' + e.message; } }
+    function jsonMinify() { try { out.value = JSON.stringify(JSON.parse(box.value || '{}')); } catch (e) { out.value = 'JSON Parse Error: ' + e.message; } }
+    function jsonValidate() { try { JSON.parse(box.value || '{}'); out.value = 'OK: valid JSON'; } catch (e) { out.value = 'Invalid JSON: ' + e.message; } }
+    function csvToJson() {
+      const lines = lineSplit(box.value).filter(l => l.length > 0);
+      if (!lines.length) { out.value = '[]'; return; }
+      const headers = lines[0].split(',').map(h => h.trim());
+      const data = lines.slice(1).map(l => {
+        const cols = l.split(',');
+        const obj = {}; headers.forEach((h, i) => obj[h] = (cols[i] || '').trim());
+        return obj;
+      });
+      out.value = JSON.stringify(data, null, 2);
+    }
 
-  // dev tools
-  function genUUID(){
-    const b = new Uint8Array(16); crypto.getRandomValues(b); b[6] = (b[6]&0x0f)|0x40; b[8] = (b[8]&0x3f)|0x80;
-    const hex = [...b].map(x=>x.toString(16).padStart(2,'0'));
-    const id = `${hex.slice(0,4).join('')}-${hex.slice(4,6).join('')}-${hex.slice(6,8).join('')}-${hex.slice(8,10).join('')}-${hex.slice(10,16).join('')}`;
-    document.getElementById('uuid').value = id; out.value = id;
-  }
-  function epochToDate(){
-    const e = Number(document.getElementById('epoch').value);
-    if(!e && e!==0){ return; }
-    const d = new Date((e.toString().length>10? e: e*1000));
-    if(isNaN(d.getTime())){ out.value='Invalid epoch'; return; }
-    out.value = d.toISOString().replace('T',' ').replace('Z',' UTC');
-  }
-  function pad(n){ return String(n).padStart(2,'0'); }
-  function dateToEpoch(){
-    const t = document.getElementById('date').value.trim();
-    if(!t) return;
-    const d = new Date(t.replace(' ','T'));
-    if(isNaN(d.getTime())){ out.value='Invalid date'; return; }
-    out.value = Math.floor(d.getTime()/1000);
-  }
+    // dev tools
+    function genUUID() {
+      const b = new Uint8Array(16); crypto.getRandomValues(b); b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+      const hex = [...b].map(x => x.toString(16).padStart(2, '0'));
+      const id = `${hex.slice(0, 4).join('')}-${hex.slice(4, 6).join('')}-${hex.slice(6, 8).join('')}-${hex.slice(8, 10).join('')}-${hex.slice(10, 16).join('')}`;
+      document.getElementById('uuid').value = id; out.value = id;
+    }
+    function epochToDate() {
+      const e = Number(document.getElementById('epoch').value);
+      if (!e && e !== 0) { return; }
+      const d = new Date((e.toString().length > 10 ? e : e * 1000));
+      if (isNaN(d.getTime())) { out.value = 'Invalid epoch'; return; }
+      out.value = d.toISOString().replace('T', ' ').replace('Z', ' UTC');
+    }
+    function pad(n) { return String(n).padStart(2, '0'); }
+    function dateToEpoch() {
+      const t = document.getElementById('date').value.trim();
+      if (!t) return;
+      const d = new Date(t.replace(' ', 'T'));
+      if (isNaN(d.getTime())) { out.value = 'Invalid date'; return; }
+      out.value = Math.floor(d.getTime() / 1000);
+    }
 
-  // simple diff (very naive)
-  function simpleDiff(){
-    const A = document.getElementById('diffA').value.split(/\r?\n/);
-    const B = document.getElementById('diffB').value.split(/\r?\n/);
-    const setB = new Set(B);
-    const removed = A.filter(x=>!setB.has(x)).map(x=>`- ${x}`).join('\n');
-    const setA = new Set(A);
-    const added = B.filter(x=>!setA.has(x)).map(x=>`+ ${x}`).join('\n');
-    document.getElementById('diffOut').textContent = removed + (removed&&added?'\n':'') + added;
-  }
-</script>
+    // simple diff (very naive)
+    function simpleDiff() {
+      const A = document.getElementById('diffA').value.split(/\r?\n/);
+      const B = document.getElementById('diffB').value.split(/\r?\n/);
+      const setB = new Set(B);
+      const removed = A.filter(x => !setB.has(x)).map(x => `- ${x}`).join('\n');
+      const setA = new Set(A);
+      const added = B.filter(x => !setA.has(x)).map(x => `+ ${x}`).join('\n');
+      document.getElementById('diffOut').textContent = removed + (removed && added ? '\n' : '') + added;
+    }
+  </script>
 </body>
+
 </html>
